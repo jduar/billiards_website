@@ -50,19 +50,21 @@
 			<div class="form-group">
 				{{form.submit( class = "btn btn-outline-info")}}
 
-			</div>
-			
-			    <div class="border-top pt-3">
 			        <small class="text-muted ml-2">
-			           <a href="#">Forgot your Password? </a>
+			           <a href="{{ url_for('reset_request')}}">Forgot your Password? </a>
 			        </small>
+
+	
+		
+			
+			    
     </div>	
 
 		</form>
 	</div>
     <div class="border-top pt-3">
         <small class="text-muted">
-           Need an account? <a class="ml-2" href="{{ url_for('register') }}">Sign up
+           Need an account? <a class="ml-2" href="{{ url_for('users.register') }}">Sign up
            </a>
         </small>
     </div>
