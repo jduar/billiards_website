@@ -1,4 +1,3 @@
-import os
 import unittest
 from flaskproject import create_app, db, mail
 
@@ -35,7 +34,7 @@ class BasicTests(unittest.TestCase):
 		pass
 
 	###############
-	#### tests ####
+	#### utils ####
 	###############
 
 	def register(self, user, email, password, confirm):

@@ -47,7 +47,8 @@ class User(db.Model, UserMixin):
 	posts = db.relationship('Post', backref='author', lazy = True)
 
 	elo = db.Column(db.Float, nullable = True)
-	games = db.relationship('Game', secondary=game_players, backref = db.backref('players', lazy = True))
+
+	games = db.relationship('Game', secondary=game_players, lazy='dynamic', backref = db.backref('players', lazy = True))
 
 	def get_reset_token(self, expires_sec = 18000):
 		s = Serializer(current_app.config['SECRET_KEY'],expires_sec)
@@ -86,13 +87,13 @@ class Post(db.Model):
 class Game(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 
-	title = db.Column(db.String(100), unique=True, nullable=False)
+	title = db.Column(db.String(100), unique=False, nullable=False)
 
 	date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
 	winner_id = db.Column(db.Integer, nullable=True)
 
-	password = db.Column(db.String(60), nullable=True)
+	password = db.Column(db.String(60), nullable=False)
 
 	def __repr__(self):
 		return f"Game({self.title}, {self.date_created})"

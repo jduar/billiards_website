@@ -1,8 +1,62 @@
-from flaskproject.models import User, Game
-from flaskproject.games.routes import delete
 import unittest
+from flaskproject import create_app, db, mail
+from flaskproject.models import User, Game
 
-class TestDb(unittest.TestCase):
+app = create_app()
+app.app_context().push()
+
+TEST_DB = 'test.db'
+
+
+class BasicTests(unittest.TestCase):
+
+	############################
+	#### setup and teardown ####
+	############################
+
+	# executed prior to each test
+	def setUp(self):
+		app.config['TESTING'] = True
+		app.config['WTF_CSRF_ENABLED'] = False
+		app.config['DEBUG'] = False
+		app.config['SECRET_KEY'] = '213123asd'
+		app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' +  TEST_DB
+		self.app = app.test_client()
+		db.drop_all()
+		db.create_all()
+
+		# Disable sending emails during unit testing
+		mail.init_app(app)
+		self.assertEqual(app.debug, False)
+
+	# executed after each test
+	def tearDown(self):
+		pass
+
+	###############
+	#### tests ####
+	###############
+
+	def register(self, user, email, password, confirm):
+		return self.app.post(
+			'/register',
+			data=dict(username = user, email=email, password=password, confirm_password=confirm),
+			follow_redirects=True
+		)
+
+	def login(self, email, password):
+		return self.app.post(
+			'/login',
+			data=dict(email=email, password=password),
+			follow_redirects=True
+		)
+
+	def logout_user(self):
+		return self.app.get(
+			'/logout',
+			follow_redirects=True
+		)
+
 	def test_add_game(self):
 		user = User(username='aaa', email='aaa@gmail.com',password='aaaa')
 		user1 = User(username='aaa1', email='aaa1@gmail.com',password='aaaa')
