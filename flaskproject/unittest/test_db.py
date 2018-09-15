@@ -34,7 +34,7 @@ class BasicTests(unittest.TestCase):
 		pass
 
 	###############
-	#### tests ####
+	#### util  ####
 	###############
 
 	def register(self, user, email, password, confirm):
@@ -57,10 +57,21 @@ class BasicTests(unittest.TestCase):
 			follow_redirects=True
 		)
 
+	def test_create_game(self):
+		response = self.register('patKen', 'patkennedy79@gmail.com', 'FlaskIsAwesome', 'FlaskIsAwesome')
+		response = self.login('patkennedy79@gmail.com', 'FlaskIsAwesome')
+
+		game_pw = '1234'
+		response = self.app.post('/game/new',
+					data=dict(password=game_pw),
+					follow_redirects=True)
+
+		self.assertIn(b'Your game has been created!', response.data)
+
 	def test_add_game(self):
 		user = User(username='aaa', email='aaa@gmail.com',password='aaaa')
 		user1 = User(username='aaa1', email='aaa1@gmail.com',password='aaaa')
-		game = Game(title='test')
+		game = Game(title='test', password = '1')
 
 		db.session.add(user)
 		db.session.add(user1)
@@ -74,12 +85,43 @@ class BasicTests(unittest.TestCase):
 		self.assertEqual(game, user.games[0])
 		self.assertEqual(game, user1.games[0])
 
+		game.players.remove(user)
 		result = []
 		for player in game.players:
 			result.append(player)
+
 		self.assertEqual([user, user1], result)
 
+	def test_del(self):
+		user = User(username='aaa', email='aaa@gmail.com', password='aaaa')
+		user1 = User(username='aaa1', email='aaa1@gmail.com', password='aaaa')
+		game = Game(title='test', password='1')
 
-	def test_del_game(self):
-		game = Game.query.first()
-		delete(game)
+		db.session.add(user)
+		db.session.add(user1)
+		db.session.add(game)
+
+		game.players.append(user)
+		game.players.append(user1)
+
+		db.session.commit()
+
+		self.assertEqual(game, user.games[0])
+		self.assertEqual(game, user1.games[0])
+
+		game.players.remove(user)
+
+		self.assertEqual([player for player in game.players], [user1])
+		self.assertEqual([game for game in user.games], [])
+
+		game.players.append(user)
+
+		db.session.commit()
+
+		db.session.delete(game)
+
+		self.assertEqual([game for game in user.games], [])
+
+
+if __name__ == "__main__":
+	unittest.main()

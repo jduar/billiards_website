@@ -95,5 +95,7 @@ class Game(db.Model):
 
 	password = db.Column(db.String(60), nullable=False)
 
+	creator = db.Column(db.Integer, nullable=True)
+
 	def __repr__(self):
 		return f"Game({self.title}, {self.date_created})"
