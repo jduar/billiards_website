@@ -5,7 +5,7 @@ from flaskproject import create_app, db, mail
 app = create_app()
 app.app_context().push()
 
-TEST_DB = 'test.db'
+TEST_DB = 'site.db'
 
 
 class BasicTests(unittest.TestCase):

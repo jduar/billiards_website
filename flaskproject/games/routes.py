@@ -5,6 +5,7 @@ from flaskproject import db, bcrypt
 from flaskproject.models import Game
 from flaskproject.games.forms import GameForm, EnterGameForm
 
+from flaskproject.games.utils import save_picture
 games = Blueprint('games', __name__)
 
 
@@ -14,11 +15,13 @@ def create_game():
     form = GameForm()
 
     if form.validate_on_submit():
-        if form.password.data == '':
-            game = Game(title=form.title.data, password=None)
-        else:
-            hashed_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-            game = Game(title=form.title.data, password=hashed_pw)
+
+        hashed_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        game = Game(name=form.name.data, password=hashed_pw)
+
+        if form.picture.data:
+            picture_fn = save_picture(form.picture.data)
+            game.image_file = picture_fn
 
         game.players.append(current_user)
 
@@ -53,13 +56,13 @@ def enter_game(game_id):
 def view_game(game_id):
     game = Game.query.get_or_404(game_id)
     if current_user not in game.players:
-            abort(403)
-    return render_template('game.html', title='View game', game=game)
+        abort(403)
+    return render_template('game.html', title='View game', game=game, creator = game.players[0])
 
 
 @games.route("/game/<int:game_id>/delete", methods=['GET', 'POST'])
 @login_required
-def delete(game_id):
+def delete_game(game_id):
     '''
     :param game_id:
     :return:
@@ -68,12 +71,34 @@ def delete(game_id):
     # TODO: implement notification system to notify the users that the game has been deleted
     game = Game.query.get_or_404(game_id)
 
-    if current_user != game.creator:
+    if current_user != game.players[0]:
         abort(403)
 
     db.session.delete(game)
     db.session.commit()
     flash('Your game has been deleted!', 'success')
+
+    return redirect(url_for('main.home'))
+
+
+
+@games.route("/game/<int:game_id>/update", methods=['GET', 'POST'])
+@login_required
+def update_game(game_id):
+    '''
+    :param game_id:
+    :return:
+    '''
+
+    # TODO: implement notification system to notify the users that the game has been deleted
+    game = Game.query.get_or_404(game_id)
+
+    if current_user != game.players[0]:
+        abort(403)
+
+    flash('Your game has been updated!', 'success')
+
+    return redirect(url_for('main.home'))
 
 
 @games.route("/game/<int:game_id>/<int:user_id>/exit", methods=['GET', 'POST'])
@@ -85,15 +110,16 @@ def exit_game(game_id, user_id):
         abort(405)
 
     else:
-        if games.players[0].id == user_id:
+        if len(game.players) == 1:
+            delete_game(game.id)
+            return redirect(url_for('main.home'))
+
+        if game.players[0].id == user_id:
             game.players.remove(game.players[0])
         else:
             game.players.remove(game.players[1])
 
-        if game.players[0].id != game.creator:
-            game.creator.id = game.players[0].id
-
     db.session.commit()
     flash('You exited the game!', 'success')
 
-    return redirect(url_for('home'))
+    return redirect(url_for('main.home'))

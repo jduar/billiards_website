@@ -9,18 +9,18 @@
 				<legend class="border-bottom mb-4"> {{ legend }} </legend>	
 
 				<div class="form-group">
-					{{form.title.label(class="form-control-label")}}
-					{% if form.title.errors%}
-						{{ form.title(class="form-control form-control-lg is-invalid") }}
+					{{form.name.label(class="form-control-label")}}
+					{% if form.name.errors%}
+						{{ form.name(class="form-control form-control-lg is-invalid") }}
 
 						<div class= "invalid-feedback">
-							{% for error in form.title.errors %}
+							{% for error in form.name.errors %}
 								<span>{{ error}} </span>
 							{% endfor %}
 						</div>
 
 					{% else %}
-						{{ form.title(class="form-control form-control-lg") }}
+						{{ form.name(class="form-control form-control-lg") }}
 					{% endif%}
 				</div>	
 
@@ -40,6 +40,18 @@
 					{% endif%}
 				</div>
 
+				<div class="form-group">
+					{{form.picture.label()}}
+					{{form.picture( class = "form-control-file")}}
+
+					{% if form.picture.errors%}
+						{% for error in form.picture.errors %}
+							<span class = "text-danger">{{ error}} </span><\br>
+						{% endfor %}
+
+					{% endif %}
+
+			</div>
 			</fieldset>
 
 			<div class="form-group">

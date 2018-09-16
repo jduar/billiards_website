@@ -6,6 +6,8 @@ from flaskproject.models import current_app, User, Post, Game
 app = create_app()
 app.app_context().push()
 
+db.drop_all()
+db.create_all()
 user = User( username = 'aaa' , email = 'aaa@gmail.com')
 user1 = User( username = 'aaa1' , email = 'aaa1@gmail.com')
 
@@ -85,17 +87,19 @@ class Post(db.Model):
 
 
 class Game(db.Model):
+	''' Base class for a Game between two players.
+		Player1 will be the one that creates the game and player2 will be the challenged player. The second player id
+	can be null since it can take some time for the second user to accept the game. If that is the case then the state
+	of the game will be pending.
+		It's also possible to add a password to the game if the creator wishes to make it a private game.
+	'''
+
 	id = db.Column(db.Integer, primary_key=True)
-
-	title = db.Column(db.String(100), unique=False, nullable=False)
-
+	name = db.Column(db.String(100), unique=False, nullable=False)
+	password = db.Column(db.String(60), nullable=False)
 	date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-	winner_id = db.Column(db.Integer, nullable=True)
-
-	password = db.Column(db.String(60), nullable=False)
-
-	creator = db.Column(db.Integer, nullable=True)
+	image_file = db.Column(db.String(20), nullable=False, default='default.png')
 
 	def __repr__(self):
-		return f"Game({self.title}, {self.date_created})"
+		return f"Post({self.title}, {self.date_posted})"

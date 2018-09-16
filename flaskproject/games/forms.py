@@ -1,14 +1,17 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField,BooleanField
+from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, Length
+
+from flask_wtf.file import FileField, FileAllowed
 
 
 class GameForm(FlaskForm):
-	title = StringField('Title',
+	name = StringField('Title',
 		default='Default Name',
 		validators=[DataRequired()])
 
-	password = PasswordField('Password', validators=[Length(min=0, max=8)])
+	password = PasswordField('Password', validators=[Length(min=3, max=8)])
+	picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
 	submit = SubmitField('Create Game')
 
 

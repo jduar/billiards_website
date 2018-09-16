@@ -1,7 +1,7 @@
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
 from flaskproject import db, bcrypt
-from flaskproject.models import User, Post
+from flaskproject.models import User, Game
 from flaskproject.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
 								   RequestResetForm, ResetPasswordForm)
 
@@ -80,15 +80,16 @@ def account():
 
 
 @users.route("/user/<string:username>")
-def user_posts(username):    
+def user_games(username):
 	page = request.args.get('page', 1, type=int)
 
 	user = User.query.filter_by(username=username).first_or_404()
-	posts = Post.query.filter_by(author=user)\
-		.order_by(Post.date_posted.desc())\
+
+	games = user.games\
+		.order_by(Game.date_created.desc())\
 		.paginate(page = page, per_page = 5)
 
-	return render_template('user_posts.html', posts=posts, user=user)
+	return render_template('user_games.html', games=games, user=user)
 
 
 @users.route("/reset_password", methods = ['GET','POST'])
