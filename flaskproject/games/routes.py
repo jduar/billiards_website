@@ -35,29 +35,36 @@ def create_game():
     return render_template('create_game.html', title='Create game', form=form)
 
 
-@games.route("/game/<int:game_id>/enter", methods=['GET', 'POST'])
+@games.route("/game/enter", methods=['GET', 'POST'])
 @login_required
-def enter_game(game_id):
-    game = Game.query.get_or_404(game_id)
+def enter_game():
 
     form = EnterGameForm()
     if form.validate_on_submit():
+
+        game = Game.query.get_or_404(form.game_id.data)
         if current_user not in game.players and len(game.players) == 1:
+
             if bcrypt.check_password_hash(game.password, form.password.data):
                 game.players.append(current_user)
                 db.session.commit()
 
-            return view_game(game_id)
-    return render_template('game.html', title='New game', form=form, legend='Create' )
+                return redirect(url_for('games.view_game', game_id=game.id))
+
+    return render_template('join_game.html', title='Join game', form=form, legend='Create' )
 
 
 @games.route("/game/<int:game_id>/view", methods=['GET', 'POST'])
 @login_required
 def view_game(game_id):
+
     game = Game.query.get_or_404(game_id)
     if current_user not in game.players:
         abort(403)
+
     return render_template('game.html', title='View game', game=game, creator = game.players[0])
+
+
 
 
 @games.route("/game/<int:game_id>/delete", methods=['GET', 'POST'])
@@ -96,7 +103,7 @@ def update_game(game_id):
     if current_user != game.players[0]:
         abort(403)
 
-    flash('Your game has been updated!', 'success')
+    flash('Your game has been updated (Not yet implemented)!', 'success')
 
     return redirect(url_for('main.home'))
 

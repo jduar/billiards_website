@@ -16,7 +16,7 @@
 
 				<small class="text-muted">{{ game.date_created.strftime('%Y-%m-%d') }}</small>
 		    </div>
-		    <h2><a class="article-title" href=" {{ url_for('games.view_game', game_id = game.id )}}">{{ game.title }}</a></h2>
+		    <h2><a class="article-title" href=" {{ url_for('games.view_game', game_id = game.id )}}">{{ game.name }}</a></h2>
 
 		  </div>
 		</article>
