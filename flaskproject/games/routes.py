@@ -55,12 +55,9 @@ def enter_game():
 
 
 @games.route("/game/<int:game_id>/view", methods=['GET', 'POST'])
-@login_required
 def view_game(game_id):
-
     game = Game.query.get_or_404(game_id)
-    if current_user not in game.players:
-        abort(403)
+
 
     return render_template('game.html', title='View game', game=game, creator = game.players[0])
 
