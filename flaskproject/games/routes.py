@@ -38,18 +38,28 @@ def create_game():
 @games.route("/game/enter", methods=['GET', 'POST'])
 @login_required
 def enter_game():
-
     form = EnterGameForm()
     if form.validate_on_submit():
 
-        game = Game.query.get_or_404(form.game_id.data)
+        game = Game.query.get(form.game_id.data)
+        if game is None:
+            flash(f'Game does not exist!', 'danger')
+            return redirect(url_for('games.enter_game'))
+
         if current_user not in game.players and len(game.players) == 1:
 
             if bcrypt.check_password_hash(game.password, form.password.data):
                 game.players.append(current_user)
                 db.session.commit()
 
-                return redirect(url_for('games.view_game', game_id=game.id))
+            else:
+                print(1111)
+                flash(f'Game does not exist!', 'danger')
+                flash(f'Wrong password!', 'danger')
+                return redirect(url_for('games.enter_game'))
+
+        return redirect(url_for('games.view_game', game_id=game.id))
+
 
     return render_template('join_game.html', title='Join game', form=form, legend='Create' )
 
@@ -57,7 +67,6 @@ def enter_game():
 @games.route("/game/<int:game_id>/view", methods=['GET', 'POST'])
 def view_game(game_id):
     game = Game.query.get_or_404(game_id)
-
 
     return render_template('game.html', title='View game', game=game, creator = game.players[0])
 
