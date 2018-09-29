@@ -51,15 +51,11 @@ def enter_game():
             if bcrypt.check_password_hash(game.password, form.password.data):
                 game.players.append(current_user)
                 db.session.commit()
-
             else:
-                print(1111)
-                flash(f'Game does not exist!', 'danger')
                 flash(f'Wrong password!', 'danger')
                 return redirect(url_for('games.enter_game'))
 
         return redirect(url_for('games.view_game', game_id=game.id))
-
 
     return render_template('join_game.html', title='Join game', form=form, legend='Create' )
 
