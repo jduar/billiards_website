@@ -102,4 +102,4 @@ class Game(db.Model):
 	image_file = db.Column(db.String(20), nullable=False, default='default.png')
 
 	def __repr__(self):
-		return f"Post({self.title}, {self.date_posted})"
+		return f"Post({self.name}, {self.date_posted})"
