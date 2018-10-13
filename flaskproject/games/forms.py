@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField
+from wtforms import StringField, SubmitField, PasswordField, SelectField, HiddenField
 from wtforms.validators import DataRequired, Length
 
 from flask_wtf.file import FileField, FileAllowed
@@ -22,3 +22,8 @@ class EnterGameForm(FlaskForm):
 
 	password = PasswordField('Password')
 	submit = SubmitField('Enter Game')
+
+
+class WinnerForm(FlaskForm):
+	group_id = SelectField(u'group_id',choices = [], validators=[DataRequired()], coerce = int)
+	submit = SubmitField('Add result')

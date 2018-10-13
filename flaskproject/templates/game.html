@@ -1,5 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
+
+
+
 <article class="media content-section">
 
 	<img class="rounded-circle account-img" src= "{{ url_for('static', filename = 'game_pics/' + game.image_file) }}">
@@ -13,14 +16,38 @@
 		<div class="article-metadata">
 			<div align="center">
 			<small class="text-muted">{{ game.date_created.strftime('%Y-%m-%d') }}</small>
+
 			</div>
 		</div>
 			<div align = center>
 
+				<div>
+					{% if game.winner %}
+                        {% if game.winner == game.players[0].id %}
+					        <a class="mr-2" href=" {{ url_for('users.user_games', username = game.players[0].username )}} ">Winner: {{game.players[0].username}}</a>
+                        {% else %}
+                            <a class="mr-2" href=" {{ url_for('users.user_games', username = game.players[1].username )}} ">Winner: {{game.players[1].username}}</a>
+
+                    {% endif %}
+					{% else %}
+                        {% if game.players[1]  %}
+                        <form method = 'POST' class="form-group">
+                            {{ form.csrf_token }}
+                            {{form.group_id}}
+
+
+                                {{ form.submit( class = "btn btn-outline-info") }}
+                        </form>
+                        {% endif %}
+
+					{% endif %}
+				</div>
+
 				{% if creator == current_user %}
 					<div>
 
-						<a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('games.update_game', game_id=game.id) }}">Update</a>
+
+						<a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('games.update_game', game_id=game.id, winner = 1) }}">Update</a>
 						<a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('games.exit_game', game_id=game.id, user_id = current_user.id) }}">Leave game</a>
 						<button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
 
@@ -28,10 +55,11 @@
 				{% else %}
 					{% if current_user in game.players %}
 					<div>
+						<a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('games.update_game', game_id=game.id, winner = 1) }}">Update</a>
 						<a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('games.exit_game', game_id=game.id, user_id = current_user.id) }}">Leave game</a>
 					</div>
-
 					{% endif %}
+
 				{% endif %}
 
 		</div>
@@ -46,11 +74,13 @@
 		 {% else %}
 			<div>
 		{% endif %}
-			<h3>Player 1: </h3>
+				<h3>Player 1:</h3>
 			  <div class="column left">
 				<img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + creator.image_file) }}">
-				<a class="mr-2" href=" {{ url_for('users.user_games', username = creator.username )}} ">{{ creator.username }}</a>
+				<a class="mr-2" href=" {{ url_for('users.user_games', username = creator.username )}} ">{{ creator.username }}; Elo = {{ creator.elo|int}}</a>
+
 			  </div>
+
 
 			<br />
 		</div>
@@ -60,7 +90,7 @@
 			<h3>Player 2: </h3>
 			  <div class="column left">
 				<img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + game.players[1].image_file) }}">
-				<a class="mr-2" href=" {{ url_for('users.user_games', username = game.players[1].username )}} ">{{ game.players[1].username }}</a>
+				<a class="mr-2" href=" {{ url_for('users.user_games', username = game.players[1].username )}} ">{{ game.players[1].username }}; Elo = {{game.players[1].elo|int}}</a>
 			  </div>
 			<br />
 		</div>
