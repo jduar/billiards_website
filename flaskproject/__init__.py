@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_bcrypt import Bcrypt 
+from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
 
@@ -14,9 +14,9 @@ login_manager.login_message_category = 'info'
 
 mail = Mail()
 
-
 def create_app(config_class = Config):
 	app = Flask(__name__)
+
 
 	app.config.from_object(config_class)
 	db.init_app(app)
@@ -25,11 +25,11 @@ def create_app(config_class = Config):
 	mail.init_app(app)
 
 
-	from flaskproject.users.routes import users 
+	from flaskproject.users.routes import users
 	from flaskproject.posts.routes import posts
 	from flaskproject.main.routes import main
 	from flaskproject.games.routes import games
-	from flaskproject.errors.handlers import errors 
+	from flaskproject.errors.handlers import errors
 
 	app.register_blueprint(users)
 	app.register_blueprint(posts)

@@ -48,7 +48,7 @@ class User(db.Model, UserMixin):
 
 	posts = db.relationship('Post', backref='author', lazy = True)
 
-	elo = db.Column(db.Float, nullable = True)
+	elo = db.Column(db.Float,default = 1200, nullable = False)
 
 	games = db.relationship('Game', secondary=game_players, lazy='dynamic', backref = db.backref('players', lazy = True))
 
@@ -100,6 +100,8 @@ class Game(db.Model):
 	date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
 	image_file = db.Column(db.String(20), nullable=False, default='default.png')
+
+	winner = db.Column(db.Integer, nullable=True)
 
 	def __repr__(self):
 		return f"Post({self.name}, {self.date_posted})"
