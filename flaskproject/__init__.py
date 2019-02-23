@@ -24,15 +24,12 @@ def create_app(config_class = Config):
 	login_manager.init_app(app)
 	mail.init_app(app)
 
-
 	from flaskproject.users.routes import users
-	from flaskproject.posts.routes import posts
 	from flaskproject.main.routes import main
 	from flaskproject.games.routes import games
 	from flaskproject.errors.handlers import errors
 
 	app.register_blueprint(users)
-	app.register_blueprint(posts)
 	app.register_blueprint(main)
 	app.register_blueprint(errors)
 	app.register_blueprint(games)

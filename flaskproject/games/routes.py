@@ -6,6 +6,7 @@ from flaskproject.models import Game
 from flaskproject.games.forms import GameForm, EnterGameForm, WinnerForm
 
 from flaskproject.games.utils import save_picture, calculate_elo
+
 games = Blueprint('games', __name__)
 
 
@@ -63,23 +64,22 @@ def enter_game():
 
 @games.route("/game/<int:game_id>/view", methods=['GET', 'POST'])
 def view_game(game_id):
+    """
 
-    #TODO:  a escolha de winner n esta a funcionar; a form não está a retornar valores.
+    ToDo: add ability to keep the games going after the winner as been decided
+
+    :param game_id:
+    :return:
+    """
 
     game = Game.query.get_or_404(game_id)
 
     form = WinnerForm()
-    choices = [(-1, 'TBD')]
+    choices = [(0, 'TBD')]
     for j in range(len(game.players)):
-        choices.append((j, game.players[j].username))
+        choices.append((j+1, game.players[j].username))
 
     form.group_id.choices = choices
-
-    if form.is_submitted():
-        flash('Your game has been submited 1!', 'success')
-
-        print(request.form.get('Add result'))
-        print(" first \n",form.data)
 
     if form.validate_on_submit() and form.group_id.data != -1:
         flash('Your game has been updated 1!', 'success')
@@ -91,6 +91,7 @@ def view_game(game_id):
         db.session.commit()
 
         flash('The winner has been decided !', 'success')
+
         return redirect(url_for('main.home'))
 
     return render_template('game.html', title='View game', game=game, creator = game.players[0], form = form)
@@ -117,28 +118,20 @@ def delete_game(game_id):
     return redirect(url_for('main.home'))
 
 
-@games.route("/game/<int:game_id>/update/winner", methods=['GET', 'POST'])
+@games.route("/game/<int:game_id>/update/", methods=['GET', 'POST'])
 @login_required
-def update_game(game_id, winner):
+def update_game(game_id):
     '''
+
+    Update game name and password
+
+                To be implemented
     :param game_id:
     :return:
     '''
 
-    game = Game.query.get_or_404(game_id)
+    abort(404)
 
-    if current_user not in game.players:
-        abort(403)
-
-    p1_elo, p2_elo = calculate_elo(game.players[0].elo, game.players[1].elo, winner)
-
-    game.players[0].elo = p1_elo
-    game.players[1].elo = p2_elo
-    db.session.commit()
-
-    flash('Your game has been updated !', 'success')
-
-    return redirect(url_for('games.view_game', game_id = game.id, form=form))
 
 
 @games.route("/game/<int:game_id>/<int:user_id>/exit", methods=['GET', 'POST'])
