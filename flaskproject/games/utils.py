@@ -1,3 +1,8 @@
+import os
+import secrets
+from PIL import Image
+from flask import current_app
+
 def save_picture(form_picture):
 	'''
 	Resizes and saves the user picture

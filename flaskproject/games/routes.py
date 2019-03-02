@@ -2,7 +2,7 @@ from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
 from flaskproject import db, bcrypt
-from flaskproject.models import Game
+from flaskproject.models import Game, User
 from flaskproject.games.forms import GameForm, EnterGameForm, WinnerForm
 
 from flaskproject.games.utils import save_picture, calculate_elo
@@ -76,25 +76,28 @@ def view_game(game_id):
 
     form = WinnerForm()
     choices = [(0, 'TBD')]
-    for j in range(len(game.players)):
-        choices.append((j+1, game.players[j].username))
+
+    players = [i for i in game.players]
+
+    for j in range(len(players)):
+        choices.append((j+1, players[j].username))
 
     form.group_id.choices = choices
 
     if form.validate_on_submit() and form.group_id.data != -1:
         flash('Your game has been updated 1!', 'success')
-        p1_elo, p2_elo = calculate_elo(game.players[0].elo, game.players[1].elo, form.group_id.data)
+        p1_elo, p2_elo = calculate_elo(game.players[0].elo, players[1].elo, form.group_id.data)
 
-        game.players[0].elo = p1_elo
-        game.players[1].elo = p2_elo
-        game.winner = game.players[form.group_id.data].id
+        players[0].elo = p1_elo
+        players[1].elo = p2_elo
+        game.winner = players[form.group_id.data].id
         db.session.commit()
 
         flash('The winner has been decided !', 'success')
 
         return redirect(url_for('main.home'))
 
-    return render_template('game.html', title='View game', game=game, creator = game.players[0], form = form)
+    return render_template('game.html', title='View game', game=game, creator = players[0], form = form, players = players)
 
 
 @games.route("/game/<int:game_id>/delete", methods=['GET', 'POST'])
@@ -133,21 +136,29 @@ def update_game(game_id):
     abort(404)
 
 
-
 @games.route("/game/<int:game_id>/<int:user_id>/exit", methods=['GET', 'POST'])
 @login_required
 def exit_game(game_id, user_id):
-    game = Game.query.get_or_404(game_id)
+    """
+    Exits the game. If there is only one player then the game is deleted.
 
+    :param game_id:
+    :param user_id:
+    :return:
+    """
+
+    # ToDo: verify that when a player exits the game, that it does not remain empty - currently does happen
+    game = Game.query.get_or_404(game_id)
+    players = [i for i in game.players]
     if current_user not in game.players:
         abort(405)
 
     else:
-        if len(game.players) == 1:
+        if len(players) == 1:
             delete_game(game.id)
             return redirect(url_for('main.home'))
 
-        if game.players[0].id == user_id:
+        if players[0].id == user_id:
             game.players.remove(game.players[0])
         else:
             game.players.remove(game.players[1])
@@ -156,3 +167,18 @@ def exit_game(game_id, user_id):
     flash('You exited the game!', 'success')
 
     return redirect(url_for('main.home'))
+
+
+@games.route("/game/match_history/<string:username>", methods=['GET'])
+@login_required
+def match_history(username):
+    """
+    See all games in which a user is in
+    :return:
+    """
+    page = request.args.get('page', 1, type = int)
+    user = User.query.filter_by(username=username).first_or_404()
+
+    games_in = user.games.order_by(Game.date_created.desc()).paginate(page = page, per_page = 5)
+    return render_template('all_games.html', games=games_in, title = 'My games', username = username)
+

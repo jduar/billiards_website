@@ -1,5 +1,5 @@
 from flask import render_template, request, Blueprint
-from flaskproject.models import Game
+from flaskproject.models import Game, User
 
 main = Blueprint('main', __name__)
 
@@ -8,8 +8,8 @@ main = Blueprint('main', __name__)
 @main.route("/home")
 def home():    
     page = request.args.get('page', 1, type = int)
-    games = Game.query.order_by(Game.date_created.desc()).paginate(page = page, per_page = 5)
-    return render_template('home.html', games=games)
+    users = User.query.order_by(User.elo.desc()).paginate(page = page, per_page = 5)
+    return render_template('home.html', users=users)
 
 
 @main.route("/about")

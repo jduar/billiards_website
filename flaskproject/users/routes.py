@@ -79,17 +79,8 @@ def account():
 	return render_template('account.html', title = 'Account', image_file =  image_file, form = form)
 
 
-@users.route("/user/<string:username>")
-def user_games(username):
-	page = request.args.get('page', 1, type=int)
 
-	user = User.query.filter_by(username=username).first_or_404()
 
-	games = user.games\
-		.order_by(Game.date_created.desc())\
-		.paginate(page = page, per_page = 5)
-
-	return render_template('user_games.html', games=games, user=user)
 
 
 @users.route("/reset_password", methods = ['GET','POST'])
@@ -137,3 +128,4 @@ def reset_token(token):
 		return redirect(url_for('users.login'))
 
 	return render_template('reset_token.html', title = 'Reset password', form = form)
+
