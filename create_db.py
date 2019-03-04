@@ -22,14 +22,15 @@ def create():
 
 	user = User(username='teste', email='teste@gmail.com', password=pw_hash('aaaa'))
 	user1 = User(username='teste1', email='teste1@gmail.com', password= pw_hash('aaaa'))
-	game = Game(name='test', password=pw_hash('1'))
+	for j in range(2):
+		game = Game(name='test' + str(j), password=pw_hash('1'))
 
-	db.session.add(user)
-	db.session.add(user1)
-	db.session.add(game)
+		db.session.add(user)
+		db.session.add(user1)
+		db.session.add(game)
 
-	game.players.append(user)
-	game.players.append(user1)
+		game.players.append(user)
+		game.players.append(user1)
 
 	db.session.commit()
 

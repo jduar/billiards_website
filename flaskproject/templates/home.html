@@ -8,7 +8,7 @@
 		  <div class="media-body">
 		    <div class="article-metadata">
 
-				<a class="mr-2" href="">{{ user.username }}</a>
+				<a class="mr-2" href="{{url_for('games.match_history',user_id = user.id, which = 'all')}} ">{{ user.username }}</a>
 
 		    </div>
               <small class="text-muted">Elo: {{ user.elo|int }}</small>

@@ -24,9 +24,9 @@
 				<div>
 					{% if game.winner %}
                         {% if game.winner == players[0].id %}
-					        <a class="mr-2" href=" {{ url_for('games.match_history', username = players[0].username )}} ">Winner: {{players[0].username}}</a>
+					        <a class="mr-2" href=" {{ url_for('games.match_history', user_id = players[0].id, which = 'all' )}} ">Winner: {{players[0].username}}</a>
                         {% else %}
-                            <a class="mr-2" href=" {{ url_for('games.match_history', username = players[1].username )}} ">Winner: {{players[1].username}}</a>
+                            <a class="mr-2" href=" {{ url_for('games.match_history', user_id  = players[1].id, which = 'all' )}} ">Winner: {{players[1].username}}</a>
 
                     {% endif %}
 					{% else %}
@@ -77,7 +77,7 @@
 				<h3>Player 1:</h3>
 			  <div class="column left">
 				<img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + creator.image_file) }}">
-				<a class="mr-2" href=" {{ url_for('games.match_history', username = creator.username )}} ">{{ creator.username }}; Elo = {{ creator.elo|int}}</a>
+				<a class="mr-2" href=" {{ url_for('games.match_history', user_id = creator.id, which = 'all' )}} ">{{ creator.username }}; Elo = {{ creator.elo|int}}</a>
 
 			  </div>
 
@@ -90,7 +90,7 @@
 			<h3>Player 2: </h3>
 			  <div class="column left">
 				<img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + players[1].image_file) }}">
-				<a class="mr-2" href=" {{ url_for('games.match_history', username = players[1].username )}} ">{{ players[1].username }}; Elo = {{players[1].elo|int}}</a>
+				<a class="mr-2" href=" {{ url_for('games.match_history', user_id = players[1].id, which = 'all' )}} ">{{ players[1].username }}; Elo = {{players[1].elo|int}}</a>
 			  </div>
 			<br />
 		</div>

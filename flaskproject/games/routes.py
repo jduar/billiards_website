@@ -90,7 +90,8 @@ def view_game(game_id):
 
         players[0].elo = p1_elo
         players[1].elo = p2_elo
-        game.winner = players[form.group_id.data].id
+        game.winner = players[form.group_id.data - 1].id
+
         db.session.commit()
 
         flash('The winner has been decided !', 'success')
@@ -147,7 +148,6 @@ def exit_game(game_id, user_id):
     :return:
     """
 
-    # ToDo: verify that when a player exits the game, that it does not remain empty - currently does happen
     game = Game.query.get_or_404(game_id)
     players = [i for i in game.players]
     if current_user not in game.players:
@@ -169,16 +169,29 @@ def exit_game(game_id, user_id):
     return redirect(url_for('main.home'))
 
 
-@games.route("/game/match_history/<string:username>", methods=['GET'])
+@games.route("/game/match_history/<string:which>/<int:user_id>", methods=['GET'])
 @login_required
-def match_history(username):
+def match_history(which,user_id):
     """
     See all games in which a user is in
     :return:
     """
     page = request.args.get('page', 1, type = int)
-    user = User.query.filter_by(username=username).first_or_404()
+    user = User.query.filter_by(id = user_id).first_or_404()
 
-    games_in = user.games.order_by(Game.date_created.desc()).paginate(page = page, per_page = 5)
-    return render_template('all_games.html', games=games_in, title = 'My games', username = username)
+    games = user.games.order_by(Game.date_created.desc())
+    tots = 0
+    wins = 0
+
+    game_info = {}
+    for j in games:
+        if j.winner:
+            tots += 1
+            if j.winner == user_id:
+                wins += 1
+
+    game_info['total_number'] = tots
+    game_info['wins'] = wins * 100 / tots
+    games_in = games.paginate(page = page, per_page = 5)
+    return render_template('all_games.html', games=games_in, title = ' All Games', user = user, game_info = game_info)
 

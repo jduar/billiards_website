@@ -6,21 +6,24 @@
 			<img class = "rounded-circle article-img" src=" {{ url_for('static', filename = 'game_pics/' + game.image_file)}}">
 		  <div class="media-body">
 		    <div class="article-metadata">
-
-				<a class="mr-2" href=" {{ url_for('games.match_history', username = game.players[0].username )}}">{{ game.players[0].username }}</a>
-				{% if game.players[1]%}
-                	<b> vs </b>
-              		<a class="mr-2" href=" {{ url_for('games.match_history', username = game.players[0].username )}}">{{ game.players[1].username }}</a>
-                {% endif %}
+            Game title:
+		    <a class="mr-2" href=" {{ url_for('games.view_game', game_id = game.id )}}">{{ game.name }}</a>
 
 				<small class="text-muted">{{ game.date_created.strftime('%Y-%m-%d') }}</small>
                       {% if game.winner %}
-                Winner:
-                <a class="mr-2" href=" {{ url_for('games.match_history', username = game.players[game.winner] )}}">  {{ game.players[game.winner].username }}</a>
+
             {% endif %}
 		    </div>
-		    <h2><a class="article-title" href=" {{ url_for('games.view_game', game_id = game.id )}}">{{ game.name }}</a>            </h2>
+                <h2 ><a {%  if game.winner %} {% if game.winner == game.players[0].id %} style="color:green" {% else %}style="color:darkred" {% endif %} {% endif %}
 
+                        class="article-title" href=" {{ url_for('games.match_history', user_id = game.players[0].id, which = 'all' )}}">{{ game.players[0].username }}</a>
+
+
+                    {% if game.players[1]%}
+                	<b> vs </b>
+              		<a {%  if game.winner %} {% if game.winner == game.players[1].id %} style="color:green" {% else %}style="color:darkred" {% endif %} {% endif %}
+                            class="article-title" href=" {{ url_for('games.match_history', user_id = game.players[1].id, which = 'all' )}}">{{ game.players[1].username }}</a></h2>
+                {% endif %}
 		  </div>
 		</article>
 	{% endfor %}
@@ -28,12 +31,27 @@
 	{% for page_num in games.iter_pages(left_edge = 1, right_edge = 1, left_current = 1, right_current = 2) %}
 		{% if page_num %}
 			{% if games.page == page_num %}
-				<a class = "btn btn-info mb-4" href=" {{url_for('games.match_history',page = page_num, username = username)}}">{{ page_num }} </a>
+				<a class = "btn btn-info mb-4" href=" {{url_for('games.match_history',page = page_num, user_id = user.id, which = 'all')}}">{{ page_num }} </a>
 			{% else %}
-				<a class = "btn btn-outline-info mb-4" href=" {{url_for('games.match_history',page = page_num,username = username)}}">{{ page_num }} </a>
+				<a class = "btn btn-outline-info mb-4" href=" {{url_for('games.match_history',page = page_num,user_id = user.id, which = 'all')}}">{{ page_num }} </a>
 			{% endif %}
 		{% else %}
 			...
 		{% endif %}
 	{%endfor%}
 {% endblock content %}
+
+{% block sidebar %}
+	    <div class="col-md-4">
+	      <div class="content-section">
+	        <h3>General information</h3>
+	          <ul class="list-group">
+                  <li class="list-group-item list-group-item-light"> Username: {{ user.username }}  </li>
+	            <li class="list-group-item list-group-item-light"> Playing since: {{ user.date_created.year }}  </li>
+	            <li class="list-group-item list-group-item-light"> Elo: {{ user.elo | int }}  </li>
+	            <li class="list-group-item list-group-item-light"> Win rate: {{ game_info['wins'] | int }} % </li>
+	          </ul>
+	        </p>
+	      </div>
+	    </div>
+{% endblock sidebar %}

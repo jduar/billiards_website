@@ -51,6 +51,8 @@ class User(db.Model, UserMixin):
     games = db.relationship('Game', secondary=game_players, lazy='dynamic',
                             backref = db.backref('players', lazy = 'dynamic'))
 
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
     def get_reset_token(self, expires_sec = 18000):
         s = Serializer(current_app.config['SECRET_KEY'],expires_sec)
         return s.dumps({'user_id': self.id}).decode('utf-8')
