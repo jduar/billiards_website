@@ -178,8 +178,13 @@ def match_history(which,user_id):
     """
     page = request.args.get('page', 1, type = int)
     user = User.query.filter_by(id = user_id).first_or_404()
+    if which == 'all':
+        games = user.games.order_by(Game.date_created.desc())
+    elif which == 'active':
+        games = user.games.filter_by(winner = None).order_by(Game.date_created.desc())
+    elif which == 'closed':
+        games = user.games.filter(Game.winner != None).order_by(Game.date_created.desc())
 
-    games = user.games.order_by(Game.date_created.desc())
     tots = 0
     wins = 0
 
@@ -191,7 +196,10 @@ def match_history(which,user_id):
                 wins += 1
 
     game_info['total_number'] = tots
-    game_info['wins'] = wins * 100 / tots
+    try:
+        game_info['wins'] = wins * 100 / tots
+    except ZeroDivisionError:
+        game_info['wins'] = 100
     games_in = games.paginate(page = page, per_page = 5)
     return render_template('all_games.html', games=games_in, title = ' All Games', user = user, game_info = game_info)
 

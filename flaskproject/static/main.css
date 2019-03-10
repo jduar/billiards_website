@@ -80,3 +80,41 @@ a.article-title:hover {
   font-size: 2.5rem;
 }
 
+
+.btn-group button {
+  background-color: #5f788a; /* Green background */
+  border: 1px solid black; /* Green border */
+  color: lightgrey; /* White text */
+  padding: 1px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+  margin-bottom: 12px;
+}
+
+.btn-group button:not(:last-child) {
+  border-right: none; /* Prevent double borders */
+}
+
+/* Clear floats (clearfix hack) */
+.btn-group:after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Add a background color on hover */
+.btn-group button:hover {
+  background-color: darkgrey;
+    color: white; /* White text */
+
+}
+
+.btn-group button:focus {
+  background-color: darkgrey;
+    color: white; /* White text */
+}
+
+
+.bot-three {
+     margin-bottom: 10cm;
+  }

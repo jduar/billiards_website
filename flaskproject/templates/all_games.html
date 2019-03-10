@@ -1,6 +1,11 @@
 {% extends "layout.html" %}
 
 {% block content %}
+    <div class="btn-group">
+  <button onclick="location.href='{{ url_for('games.match_history',user_id =user.id,which = 'all' )}}'"  >All</button>
+  <button onclick="location.href='{{ url_for('games.match_history',user_id =user.id,which = 'active' )}}'" >Active</button>
+  <button onclick="location.href='{{ url_for('games.match_history',user_id =user.id,which = 'closed' )}}'">Closed</button>
+</div>
 {% for game in games.items %}
 		<article class="media content-section">
 			<img class = "rounded-circle article-img" src=" {{ url_for('static', filename = 'game_pics/' + game.image_file)}}">
@@ -46,8 +51,13 @@
 	      <div class="content-section">
 	        <h3>General information</h3>
 	          <ul class="list-group">
-                  <li class="list-group-item list-group-item-light"> Username: {{ user.username }}  </li>
-	            <li class="list-group-item list-group-item-light"> Playing since: {{ user.date_created.year }}  </li>
+                  <div class="media">
+			    <img class = "rounded-circle article-img" src=" {{ url_for('static', filename = 'profile_pics/' + user.image_file)}}">
+                  <div class="media-body">
+	                <h3 class="text-secondary">{{user.username}}</h3>
+	                <small class="bot-three">Playing since: {{ user.date_created.year }} </small>
+	            </div> </div>
+
 	            <li class="list-group-item list-group-item-light"> Elo: {{ user.elo | int }}  </li>
 	            <li class="list-group-item list-group-item-light"> Win rate: {{ game_info['wins'] | int }} % </li>
 	          </ul>
