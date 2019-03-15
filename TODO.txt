@@ -1,4 +1,4 @@
-ToDo:
+To Do:
     - Fix all 'ToDo' in the code.
     - Verify that the elo system is working as expected
     - Implement a profile view, in which one can see more information about the person
