@@ -8,7 +8,7 @@
  
    Inside the folder, flaskproject, we can find the website, i.e, 
     the frontend and backend. It's structured using blueprints, which is a fancy way of saying that
-    inside each folder (eg, "Users") w e will only find routes and forms, related to 
+    inside each folder (eg, "Users") we will only find routes and forms, related to 
     the users.
     
 ## How to setup your python environment
