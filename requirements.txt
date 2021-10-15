@@ -2,7 +2,7 @@ asn1crypto==0.24.0
 bcrypt==3.1.4
 blinker==1.4
 certifi==2018.8.24
-cffi==1.11.5
+cffi==1.14.6
 chardet==3.0.4
 click==6.7
 coverage==4.5.1
@@ -19,11 +19,11 @@ idna==2.7
 itsdangerous==0.24
 Jinja2==2.10
 kiwisolver==1.0.1
-MarkupSafe==1.0
+MarkupSafe==1.1
 matplotlib==2.2.3
 migrate3==0.3.11
-numpy==1.15.1
-Pillow==6.2.0
+numpy==1.21.2
+Pillow==8.3.2
 pycparser==2.18
 pyFirmata==1.0.3
 pyOpenSSL==18.0.0
@@ -32,10 +32,10 @@ pyserial==3.4
 python-dateutil==2.7.3
 pytz==2018.5
 requests>=2.20.0
-scipy==1.1.0
+scipy==1.7.1
 six==1.11.0
 SQLAlchemy==1.2.11
 urllib3==1.24.2
 virtualenv==16.0.0
-Werkzeug==0.15.3
+Werkzeug==0.16.1
 WTForms==2.2.1
