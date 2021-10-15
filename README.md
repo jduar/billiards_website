@@ -59,9 +59,19 @@ When you commit for the first time after this step, the process will take longer
 
 You can read more about pre-commit [here](https://pre-commit.com/).
     
-## How to run the code
+## How to run the application
 
-Execute the run.py file
+Run the container.
+
+```
+$ docker-compose up --build
+```
+
+Create the database - you can use this command to reset it aswell.
+
+```
+$ docker-compose exec app flask reset-db
+```
   
 ## Todo:
     

@@ -4,7 +4,6 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 
-from flaskproject.commands import register_commands
 from flaskproject.config import Config
 
 db = SQLAlchemy()
@@ -34,6 +33,8 @@ def create_app(config_class=Config):
     app.register_blueprint(main)
     app.register_blueprint(errors)
     app.register_blueprint(games)
+
+    from flaskproject.commands import register_commands
 
     register_commands(app)
 
