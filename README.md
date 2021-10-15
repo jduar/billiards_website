@@ -72,10 +72,15 @@ Create the database - you can use this command to reset it aswell.
 ```
 $ docker-compose exec app flask reset-db
 ```
+
+To run a python shell inside the container - for debugging, for example, run:
+
+```
+$ docker-compose exec app flask shell
+```
   
 ## Todo:
     
- - [ ] Change the hard coded Secret key and databse uri
  - [ ] Add unit tests 
  - [ ] Create statistical analysis of each player
  - [ ] Implement a notification system
