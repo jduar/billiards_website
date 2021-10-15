@@ -13,16 +13,38 @@
     
 ## How to setup your python environment
 
-   There are two options of setting up the  environment:
+   There are two options to set up the environment:
    * Install system wide
    * Install using virtual environments
     
-   In our root folder of the directory one can find a "requirements.txt" file,
-   that has inside modules names and version numbers. This file is used to avoid manually isntalling
-   every module inside by hand.
+   In our directory's root folder one can find a "requirements.txt" file which lists
+   module names and version numbers. This file is used to avoid manually isntalling every module
+   inside by hand.
+
+   ### Virtual environment path
+
+   To create a virtual environment:
+   ```
+   $ python3 -m venv venv
+   ```
+
+   To enter the virtual environment:
+   ```
+   $ source venv/bin/activate
+   ```
+
+   Or if you're using the fish shell:
+   ```
+   $ source venv/bin/activate.fish
+   ```
+
+   ***
+
     
-   To install the libraries it's only needed to use the command:
-       python -m pip install -r requirements.txt
+   To install the libraries use the command below, either system wide or inside your virtual environment:
+   ```    
+   $ python3 -m pip install -r requirements.txt
+   ```
     
    Or, if using PyCharm, it automatically notices the file and a popup appears to install the modules
 
@@ -38,4 +60,3 @@
   - [ ] Create a friend system (Will need a revamp of the database architecture)
   - [ ] Revamp the game joining process
   - [ ] Implement support for tournaments 
-
